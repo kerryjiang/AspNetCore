@@ -54,6 +54,9 @@ Later on, this will be checked using this condition:
       Microsoft.AspNetCore.AspNetCoreModule;
       Microsoft.AspNetCore.AspNetCoreModuleV2;
       java:signalr;
+      Microsoft.AspNetCore.AzureAppServicesIntegration;
+      Microsoft.AspNetCore.AzureAppServices.HostingStartup;
+      Microsoft.AspNetCore.AzureAppServices.SiteExtension;
     </PackagesInPatch>
   </PropertyGroup>
 
