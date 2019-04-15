@@ -22,7 +22,7 @@
     <MicrosoftExtensionsDependencyModelPackageVersion>3.0.0-preview5-27611-18</MicrosoftExtensionsDependencyModelPackageVersion>
     <MicrosoftNETCoreAppPackageVersion>3.0.0-preview5-27611-18</MicrosoftNETCoreAppPackageVersion>
     <!-- Packages from dotnet/corefx -->
-    <MicrosoftBclJsonSourcesPackageVersion>4.6.0-preview5.19211.22</MicrosoftBclJsonSourcesPackageVersion>
+    <MicrosoftBclJsonSourcesPackageVersion>4.6.0-preview5.19215.11</MicrosoftBclJsonSourcesPackageVersion>
     <MicrosoftCSharpPackageVersion>4.6.0-preview5.19211.22</MicrosoftCSharpPackageVersion>
     <MicrosoftWin32RegistryPackageVersion>4.6.0-preview5.19211.22</MicrosoftWin32RegistryPackageVersion>
     <SystemComponentModelAnnotationsPackageVersion>4.6.0-preview5.19211.22</SystemComponentModelAnnotationsPackageVersion>
