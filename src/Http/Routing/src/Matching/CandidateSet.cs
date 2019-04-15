@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +19,7 @@ namespace Microsoft.AspNetCore.Routing.Matching
     {
         private const int BitVectorSize = 32;
 
-        private readonly CandidateState[] _candidates;
+        private CandidateState[] _candidates;
 
         /// <summary>
         /// <para>
@@ -55,8 +56,6 @@ namespace Microsoft.AspNetCore.Routing.Matching
                 throw new ArgumentException($"The provided {nameof(endpoints)}, {nameof(values)}, and {nameof(scores)} must have the same length.");
             }
 
-            Count = endpoints.Length;
-
             _candidates = new CandidateState[endpoints.Length];
             for (var i = 0; i < endpoints.Length; i++)
             {
@@ -66,8 +65,6 @@ namespace Microsoft.AspNetCore.Routing.Matching
 
         internal CandidateSet(Candidate[] candidates)
         {
-            Count = candidates.Length;
-
             _candidates = new CandidateState[candidates.Length];
             for (var i = 0; i < candidates.Length; i++)
             {
@@ -78,7 +75,7 @@ namespace Microsoft.AspNetCore.Routing.Matching
         /// <summary>
         /// Gets the count of candidates in the set.
         /// </summary>
-        public int Count { get; }
+        public int Count => _candidates.Length;
 
         /// <summary>
         /// Gets the <see cref="CandidateState"/> associated with the candidate <see cref="Endpoint"/>
@@ -153,7 +150,7 @@ namespace Microsoft.AspNetCore.Routing.Matching
         /// <param name="index">The candidate index.</param>
         /// <param name="endpoint">
         /// The <see cref="Endpoint"/> to replace the original <see cref="Endpoint"/> at
-        /// the <paramref name="index"/>. If <paramref name="endpoint"/> the candidate will be marked
+        /// the <paramref name="index"/>. If <paramref name="endpoint"/> is <c>null</c>. the candidate will be marked
         /// as invalid.
         /// </param>
         /// <param name="values">
@@ -173,6 +170,64 @@ namespace Microsoft.AspNetCore.Routing.Matching
             if (endpoint == null)
             {
                 SetValidity(index, false);
+            }
+        }
+
+        /// <summary>
+        /// Replaces the <see cref="Endpoint"/> at the provided <paramref name="index"/> with the
+        /// provided <paramref name="endpoints"/>.
+        /// </summary>
+        /// <param name="index">The candidate index.</param>
+        /// <param name="endpoints">
+        /// The list of endpoints <see cref="Endpoint"/> to replace the original <see cref="Endpoint"/> at
+        /// the <paramref name="index"/>. If <paramref name="endpoints"/> is empty, the candidate will be marked
+        /// as invalid.
+        /// </param>
+        /// <param name="values">
+        /// The <see cref="RouteValueDictionary"/> used to fill the route values of each candidate.
+        /// </param>
+        public void ReplaceEndpoint(int index, IReadOnlyList<Endpoint> endpoints, RouteValueDictionary values)
+        {
+            // Friendliness for inlining
+            if ((uint)index >= Count)
+            {
+                ThrowIndexArgumentOutOfRangeException();
+            }
+
+            switch (endpoints.Count)
+            {
+                case 0:
+                    ReplaceEndpoint(index, (Endpoint)null, values);
+                    break;
+
+                case 1:
+                    ReplaceEndpoint(index, endpoints[0], values);
+                    break;
+
+                default:
+                    // Adding candidates requires expanding the array.
+                    var original = _candidates;
+                    _candidates = new CandidateState[original.Length - 1 + endpoints.Count];
+
+                    for (var i = 0; i < index; i++)
+                    {
+                        _candidates[i] = original[i];
+                    }
+
+                    var score = original[index].Score >= 0 ? original[index].Score : ~original[index].Score;
+                    for (var i = 0; i < endpoints.Count; i++)
+                    {
+                        var endpoint = endpoints[i];
+                        _candidates[i + index] = new CandidateState(endpoint, values, endpoint == null ? ~score : score);
+                    }
+
+                    for (var i = index + 1; i < original.Length; i++)
+                    {
+                        _candidates[i + endpoints.Count - 1] = original[i];
+                    }
+
+                    break;
+                    
             }
         }
 

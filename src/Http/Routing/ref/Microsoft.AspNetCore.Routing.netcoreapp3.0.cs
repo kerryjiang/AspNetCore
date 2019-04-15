@@ -530,10 +530,11 @@ namespace Microsoft.AspNetCore.Routing.Matching
     public sealed partial class CandidateSet
     {
         public CandidateSet(Microsoft.AspNetCore.Http.Endpoint[] endpoints, Microsoft.AspNetCore.Routing.RouteValueDictionary[] values, int[] scores) { }
-        public int Count { [System.Runtime.CompilerServices.CompilerGeneratedAttribute]get { throw null; } }
+        public int Count { get { throw null; } }
         public ref Microsoft.AspNetCore.Routing.Matching.CandidateState this[int index] { [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]get { throw null; } }
         public bool IsValidCandidate(int index) { throw null; }
         public void ReplaceEndpoint(int index, Microsoft.AspNetCore.Http.Endpoint endpoint, Microsoft.AspNetCore.Routing.RouteValueDictionary values) { }
+        public void ReplaceEndpoint(int index, System.Collections.Generic.IReadOnlyList<Microsoft.AspNetCore.Http.Endpoint> endpoints, Microsoft.AspNetCore.Routing.RouteValueDictionary values) { }
         public void SetValidity(int index, bool value) { }
     }
     [System.Runtime.InteropServices.StructLayoutAttribute(System.Runtime.InteropServices.LayoutKind.Sequential)]
